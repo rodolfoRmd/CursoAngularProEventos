@@ -2,8 +2,8 @@
 import { temporaryAllocator } from '@angular/compiler/src/render3/view/util';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 
-import { Evento } from '../../../models/Evento';
-import { EventoService } from '../../../services/evento.service';
+import { Evento } from '@app/models/Evento';
+import { EventoService } from '@app/services/evento.service';
 
 
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
