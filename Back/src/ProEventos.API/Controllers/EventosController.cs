@@ -9,6 +9,7 @@ using ProEventos.Domain;
 using ProEventos.Persistence.Contexto;
 using ProEventos.Application.Contratos;
 using Microsoft.AspNetCore.Http;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Controllers
 {
@@ -36,9 +37,27 @@ namespace ProEventos.API.Controllers
             try
             {
                 var eventos = await _eventoService.GetAllEventosAsync(true);
-                if (eventos == null) return NotFound();
+                if (eventos == null) return NotFound("Nenhum evento econtrado");
 
-                return Ok(eventos);
+                var eventosRetorno = new List<EventoDto>();
+                foreach (var evento in eventos)
+                {
+                    eventosRetorno.Add(new EventoDto()
+                    {
+                        Id = evento.Id,
+                        Local = evento.Local,
+                        DataEvento = evento.DataEvento.ToString(),
+                        Tema = evento.Tema,
+                        QtdePessoas = evento.QtdePessoas,
+                        ImagemURL = evento.ImagemURL,
+                        Telefone = evento.Telefone,
+                        Email = evento.Email
+                    });
+                }
+
+
+
+                return Ok(eventosRetorno);
 
             }
             catch (Exception ex)
@@ -86,7 +105,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
             try
             {
@@ -104,7 +123,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
             {
@@ -121,14 +140,15 @@ namespace ProEventos.API.Controllers
             }
         }
 
-[HttpDelete("{id}")]
-public async Task<IActionResult> Delete(int id){
-    try
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
             {
-             return await _eventoService.DeleteEvento(id)?
-                Ok("Sucesso ao deletar") : 
-                 BadRequest("Evento não deletado");
-                
+                return await _eventoService.DeleteEvento(id) ?
+                   Ok("Sucesso ao deletar") :
+                    BadRequest("Evento não deletado");
+
 
 
             }
@@ -137,7 +157,7 @@ public async Task<IActionResult> Delete(int id){
 
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro: {ex.Message}");
             }
-}
+        }
 
     }
 }
