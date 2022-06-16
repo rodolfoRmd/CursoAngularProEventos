@@ -39,25 +39,11 @@ namespace ProEventos.API.Controllers
                 var eventos = await _eventoService.GetAllEventosAsync(true);
                 if (eventos == null) return NotFound("Nenhum evento econtrado");
 
-                var eventosRetorno = new List<EventoDto>();
-                foreach (var evento in eventos)
-                {
-                    eventosRetorno.Add(new EventoDto()
-                    {
-                        Id = evento.Id,
-                        Local = evento.Local,
-                        DataEvento = evento.DataEvento.ToString(),
-                        Tema = evento.Tema,
-                        QtdePessoas = evento.QtdePessoas,
-                        ImagemURL = evento.ImagemURL,
-                        Telefone = evento.Telefone,
-                        Email = evento.Email
-                    });
-                }
+             
 
 
 
-                return Ok(eventosRetorno);
+                return Ok(eventos);
 
             }
             catch (Exception ex)
@@ -146,7 +132,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 return await _eventoService.DeleteEvento(id) ?
-                   Ok("Sucesso ao deletar") :
+                   Ok(new {message= "Deletado"}) :
                     BadRequest("Evento não deletado");
 
 
